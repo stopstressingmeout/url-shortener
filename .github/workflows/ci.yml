@@ -1,0 +1,63 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # A Postgres container that runs next to our job, like your docker-compose db.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: urlshortener
+        ports:
+          - 5432:5432
+        # Wait until Postgres is actually ready before starting our steps.
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+
+    # Settings for the app. These are throwaway values that only exist in CI.
+    env:
+      DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/urlshortener
+      TEST_DATABASE_URL: postgresql+psycopg://postgres:postgres@localhost:5432/urlshortener_test
+      SECRET_KEY: ci-only-secret-key
+
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+
+      - name: Install Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: uv sync --locked
+
+      - name: Check that migrations apply to an empty database
+        run: uv run alembic upgrade head
+
+      - name: Run tests
+        run: uv run pytest -v
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@v4
+
+      - name: Build the Docker image
+        run: docker build -t url-shortener .
