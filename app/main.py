@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 
+from app.auth import router as auth_router
 from app.routers import urls
 
 app = FastAPI(title="URL Shortener")
@@ -10,6 +11,6 @@ def health_check():
     return {"status": "ok"}
 
 
-# Included AFTER /health on purpose: the redirect route /{slug} matches almost
-# any path, so specific routes must be registered first.
+# Order matters: urls.router contains the catch-all /{slug}, so it goes last.
+app.include_router(auth_router.router)
 app.include_router(urls.router)
