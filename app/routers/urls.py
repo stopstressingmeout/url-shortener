@@ -31,7 +31,7 @@ def create_url(payload:UrlCreate,request:Request,db:Session=Depends(get_db)):
 
 @router.get("/{slug}")
 def redirect_to_original(slug:str,db:Session=Depends(get_db)):
-    url=db.scaler(select(Url).where(Url.slug==slug))
+    url=db.scalar(select(Url).where(Url.slug==slug))
     if url is None:
         raise HTTPException(status_code=404,detail="Short URL not found")
     return RedirectResponse(url.original_url,status_code=307)
