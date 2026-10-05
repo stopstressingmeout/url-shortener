@@ -13,8 +13,7 @@ WORKDIR /app
 
 # 1) Dependencies first. This layer is only rebuilt when these two files change.
 COPY pyproject.toml uv.lock ./
-RUN uv sync --locked --no-dev
-
+RUN uv sync --locked --no-dev --no-install-project
 # 2) Then the application code (changes often, so it comes later).
 COPY app ./app
 COPY alembic ./alembic
