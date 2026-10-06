@@ -45,7 +45,6 @@ def create_url(
     raise HTTPException(status_code=500, detail="Could not generate a unique slug")
 
 
-# This must stay ABOVE the /{slug} route, or "urls" would be treated as a slug.
 @router.get("/urls", response_model=list[UrlResponse])
 def list_my_urls(
     request: Request,

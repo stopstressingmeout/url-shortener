@@ -22,7 +22,6 @@ class UserResponse(BaseModel):
 
     id: int
     email: EmailStr
-    # Note: no password field here, so it can never leak in a response.
 
 
 class Token(BaseModel):

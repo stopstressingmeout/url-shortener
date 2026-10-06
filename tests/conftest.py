@@ -1,8 +1,6 @@
 import os
 
-# IMPORTANT: these must be set BEFORE anything from `app` is imported.
-# We force the app to use a separate test database, so running the tests
-# can never touch your development data.
+
 TEST_DATABASE_URL = os.environ.get(
     "TEST_DATABASE_URL",
     "postgresql+psycopg://postgres:postgres@localhost:5432/urlshortener_test",

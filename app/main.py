@@ -11,7 +11,6 @@ app.add_middleware(RateLimitMiddleware)
 
 @app.get("/", include_in_schema=False)
 def root():
-    # Send visitors of the bare domain to the interactive API docs.
     return RedirectResponse(url="/docs")
 
 
