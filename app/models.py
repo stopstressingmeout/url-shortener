@@ -23,7 +23,6 @@ class Url(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     slug: Mapped[str] = mapped_column(String(20), unique=True, index=True)
     original_url: Mapped[str] = mapped_column(String(2048))
-    # Every link belongs to a user.
     owner_id: Mapped[int] = mapped_column(ForeignKey("users.id"), index=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()

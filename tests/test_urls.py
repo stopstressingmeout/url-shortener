@@ -25,7 +25,6 @@ def test_redirect_sends_user_to_original_url(client, auth_headers):
         headers=auth_headers,
     ).json()
 
-    # follow_redirects=False lets us inspect the redirect itself.
     response = client.get(f"/{created['slug']}", follow_redirects=False)
     assert response.status_code == 307
     assert response.headers["location"] == "https://example.com/some/page"
@@ -37,7 +36,6 @@ def test_redirect_works_without_login(client, auth_headers):
         json={"original_url": "https://example.com/public"},
         headers=auth_headers,
     ).json()
-    # No headers passed here: following a short link is public.
     response = client.get(f"/{created['slug']}", follow_redirects=False)
     assert response.status_code == 307
 
@@ -67,5 +65,4 @@ def test_users_only_see_their_own_urls(client, create_user):
 
     assert len(alice_urls) == 2
     assert len(bob_urls) == 1
-    # Bob's link must not appear in Alice's list.
     assert bobs_link["slug"] not in [u["slug"] for u in alice_urls]

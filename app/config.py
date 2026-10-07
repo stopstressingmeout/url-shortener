@@ -16,8 +16,6 @@ class Settings(BaseSettings):
     @field_validator("database_url")
     @classmethod
     def use_psycopg_driver(cls, value: str) -> str:
-        # Hosting platforms hand out "postgres://" or "postgresql://" URLs.
-        # Rewrite them so SQLAlchemy uses the psycopg driver we installed.
         for prefix in ("postgres://", "postgresql://"):
             if value.startswith(prefix):
                 return "postgresql+psycopg://" + value[len(prefix):]
